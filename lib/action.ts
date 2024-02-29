@@ -19,7 +19,9 @@ export async function authenticate(_currentState: unknown, formData: FormData) {
   }
   await connectDB();
   const email = formData.get("email");
-  auth(formData);
+  // auth(formData);
+
+  
 
   //   const userAvailable = await User.findOne({ email });
   //   if (userAvailable) {

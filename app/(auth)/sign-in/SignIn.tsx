@@ -6,11 +6,10 @@ const SignIn = () => {
   const [errorMessage, dispatch] = useFormState(authenticate, undefined);
   console.log(errorMessage, "errorMessage");
 
-  return (
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Login</h2>
-        <form className="flex flex-col" action={dispatch}>
+        <form className="flex flex-col" >
           <input
             type="email"
             name="email"
@@ -50,6 +49,17 @@ const SignIn = () => {
           <button
             type="submit"
             className="bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-bold py-2 px-4 rounded-md mt-4 hover:bg-indigo-600 hover:to-blue-600 transition ease-in-out duration-150"
+            onClick={async (e) => {
+              e.preventDefault();
+              const response = await fetch("/api/auth", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: "",
+              });
+              console.log(response, "response");
+            }}
           >
             Login
           </button>
