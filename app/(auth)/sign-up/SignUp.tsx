@@ -1,11 +1,12 @@
 "use client";
 import React, { FormEvent } from "react";
+import { toast } from "react-toastify";
 
 const SignUp = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    await fetch("/api/auth/register", {
+    const res = await fetch("/api/auth/register", {
       method: "POST",
       body: JSON.stringify({
         email: formData.get("email"),
@@ -14,12 +15,28 @@ const SignUp = () => {
         password: formData.get("password"),
       }),
     });
+    const resData = await res.json();
+    if (!res.ok) {
+      return toast.error(resData?.message);
+    }
+
+    toast.success(resData?.message);
   };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <div className="w-full max-w-md bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Sign Up</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Sign Up</h2>
+        <p className="text-gray-600 text-[11px] mb-4">
+          Create a free account or
+          <a
+            href="/sign-in"
+            className="hover:text-blue-900 font-medium hover:underline pl-1"
+          >
+            log in
+          </a>
+        </p>
+
         <form className="flex flex-col" onSubmit={(e) => handleSubmit(e)}>
           <input
             type="email"

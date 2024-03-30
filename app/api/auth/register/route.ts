@@ -34,7 +34,11 @@ export async function POST(req: Request) {
 
     if (user) {
       return NextResponse.json(
-        { _id: user.id, email: user.email },
+        {
+          _id: user.id,
+          email: user.email,
+          message: "Sign-up successful! You can now log in.",
+        },
         { status: 201 }
       );
     } else {
