@@ -2,6 +2,7 @@
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { FormEvent } from "react";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
   const router = useRouter();
@@ -18,6 +19,8 @@ const SignIn = () => {
     if (!res?.error) {
       router.push("/");
     }
+
+    toast.error(res?.error);
   };
 
   return (
@@ -55,7 +58,7 @@ const SignIn = () => {
               Don't have an account?
               <a
                 href="/sign-up"
-                className="text-sm text-blue-500 -200 hover:underline mt-4"
+                className="text-sm text-blue-500 -200 hover:underline mt-4 pl-1"
               >
                 Signup
               </a>

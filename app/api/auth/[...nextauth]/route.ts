@@ -37,10 +37,27 @@ const handler = NextAuth({
           throw new Error("Invalid email or password");
         }
 
+        console.log(user, "userX", user.email, user._id);
+
         return user;
       },
     }),
   ],
+
+  callbacks: {
+    session: async ({ session, token }: any) => {
+      if (session?.user) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
+    jwt: async ({ user, token }) => {
+      if (user) {
+        token.uid = user.id;
+      }
+      return token;
+    },
+  },
 
   secret: process.env.NEXTAUTH_SECRET,
 });

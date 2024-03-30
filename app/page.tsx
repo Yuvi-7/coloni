@@ -1,5 +1,7 @@
+import "react-toastify/dist/ReactToastify.css";
 import Header from "@/_components/Header";
 import HomeComp from "@/_components/Home";
+import { ToastContainer } from "react-toastify";
 
 export default function Home() {
   return (
@@ -8,6 +10,7 @@ export default function Home() {
       <main className="">
         <HomeComp />
       </main>
+      <ToastContainer />
     </>
   );
 }
