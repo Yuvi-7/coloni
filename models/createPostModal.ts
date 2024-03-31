@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const createPostSchema = new mongoose.Schema(
   {
-    creator: {
+    creator_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
@@ -21,6 +21,3 @@ const createPostSchema = new mongoose.Schema(
 
 const Post = mongoose.models.Post || mongoose.model("Post", createPostSchema);
 export default Post;
-
-
-

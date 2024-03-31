@@ -6,9 +6,10 @@ import connectDB from "@/lib/dbConnection";
 
 export async function POST(req: Request) {
   try {
-    const { email, password, username, name } = await req.json();
+    const { email, password, username, fullname } = await req.json();
+    console.log(req.json(), "res");
 
-    if (!username || !email || !password || !name) {
+    if (!username || !email || !password || !fullname) {
       return NextResponse.json(
         { message: "All fields are mandatory!" },
         { status: 400 }
@@ -27,6 +28,7 @@ export async function POST(req: Request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
+      fullname,
       username,
       email,
       password: hashedPassword,
@@ -37,6 +39,8 @@ export async function POST(req: Request) {
         {
           _id: user.id,
           email: user.email,
+          username: user.username,
+          fullname: user.fullname,
           message: "Sign-up successful! You can now log in.",
         },
         { status: 201 }

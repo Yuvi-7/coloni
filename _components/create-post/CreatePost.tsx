@@ -1,20 +1,27 @@
 "use client";
 import { Avatar } from "@mui/material";
 import { useSession } from "next-auth/react";
+import { ChangeEvent, useState } from "react";
 import { IoCloseOutline } from "react-icons/io5";
 import { toast } from "react-toastify";
 
 const CreatePost = () => {
   const session = useSession()?.data;
+  const [text, setText] = useState("");
 
-  console.log(session?.user?.id, "seesx");
+  console.log(session, "seesx");
+
+  const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+    const { value } = e.target;
+    setText(value);
+  };
 
   const createPost = async () => {
     const res = await fetch("/api/post", {
       method: "POST",
       body: JSON.stringify({
-        creator: session?.user?.id,
-        text: "reandom tex",
+        creator_id: session?.user?.id,
+        text,
       }),
     });
     const resData = await res.json();
@@ -23,6 +30,20 @@ const CreatePost = () => {
     }
 
     toast.success(resData?.message);
+    getPost();
+  };
+
+  const getPost = async () => {
+    const res = await fetch("/api/post", {
+      method: "GET",
+    });
+    // const resData = await res.json();
+    console.log(res, "resD");
+    // if (!res.ok) {
+    //   return toast.error(resData?.message);
+    // }
+
+    // toast.success(resData?.message);
   };
 
   return (
@@ -32,8 +53,8 @@ const CreatePost = () => {
           <Avatar alt="Yemy Sharp" src="/broken-image.jpg" />
 
           <div className="flex flex-col justify-center pl-2">
-            <strong>Yuvraj Gupta</strong>
-            <span className="text-xs">@yuvig7</span>
+            <strong>{session?.user?.fullname}</strong>
+            <span className="text-xs">@{session?.user?.username}</span>
           </div>
         </div>
 
@@ -49,7 +70,8 @@ const CreatePost = () => {
           rows={4}
           className="w-full border-b-2 outline-none resize-none"
           placeholder="What's happening today?"
-        ></textarea>
+          onChange={(e) => handleChange(e)}
+        />
       </div>
       <div className="flex justify-end ">
         <button
