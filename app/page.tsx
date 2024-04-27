@@ -1,5 +1,5 @@
 import "react-toastify/dist/ReactToastify.css";
-import Header from "@/_components/Header";
+import Header from "@/_components/header/Header";
 import HomeComp from "@/_components/Home";
 import { ToastContainer } from "react-toastify";
 
