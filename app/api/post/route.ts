@@ -2,12 +2,15 @@
 import { NextResponse, NextRequest } from "next/server";
 import Post from "@/models/createPostModal";
 import connectDB from "@/lib/dbConnection";
+import User from "@/models/userModel";
 
 export async function POST(req: Request) {
   try {
-    const { creator, text } = await req.json();
+    const { creator_id, text, username, fullname, assets } = await req.json();
 
-    if (!creator || !text) {
+    console.log(text, username, fullname, assets, "5555");
+
+    if (!creator_id || !text) {
       return NextResponse.json(
         { message: "All fields are mandatory!" },
         { status: 400 }
@@ -17,15 +20,24 @@ export async function POST(req: Request) {
     await connectDB();
 
     const post = await Post.create({
-      creator: creator,
+      creator_id,
+      username,
+      fullname,
       text,
+      assets,
     });
 
     if (post) {
+      const user = await User.findOne({ _id: creator_id });
+      console.log(post, "9090",);
+
       return NextResponse.json(
         {
-          creator: post.creator,
+          creator_id: post?.creator_id,
+          creator_name: user?.fullname,
+          creator_username: user?.username,
           text: post.text,
+          assets: post.assets,
           message: "Success! Your post has been published.",
         },
         { status: 201 }
@@ -36,6 +48,23 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+  } catch (e) {
+    return NextResponse.json({ message: e }, { status: 400 });
+  }
+}
+
+export async function GET() {
+  try {
+    await connectDB();
+    const posts = await Post.find().populate("creator_id").exec();
+    if (!posts) {
+      return NextResponse.json(
+        { message: "Something Went Wrong!" },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json({ posts }, { status: 200 });
   } catch (e) {
     return NextResponse.json({ message: e }, { status: 400 });
   }
