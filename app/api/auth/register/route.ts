@@ -32,6 +32,9 @@ export async function POST(req: Request) {
       username,
       email,
       password: hashedPassword,
+      pending_friend_req:[],
+      friends:[],
+      sent_friend_req:[]
     });
 
     if (user) {

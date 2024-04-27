@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
@@ -23,6 +23,24 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please add the user password"],
     },
+
+    // pending_friend_req: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: "User",
+    //   required: [false],
+    // },
+
+    // friends: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: "User",
+    //   required: [false],
+    // },
+
+    // sent_friend_req: {
+    //   type: Schema.Types.ObjectId,
+    //   ref: "User",
+    //   required: [false],
+    // },
   },
   { timestamps: true }
 );

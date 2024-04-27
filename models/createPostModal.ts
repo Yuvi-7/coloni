@@ -11,6 +11,10 @@ const createPostSchema = new mongoose.Schema(
       type: String,
       required: [true, "Write Something"],
     },
+    assets: {
+      type: Array<{ id: string; url: string; type: string }[]>,
+      required: [true, "Assets Needed"],
+    },
     likes: {
       type: Number,
       default: 0,

@@ -6,7 +6,9 @@ import User from "@/models/userModel";
 
 export async function POST(req: Request) {
   try {
-    const { creator_id, text, username, fullname } = await req.json();
+    const { creator_id, text, username, fullname, assets } = await req.json();
+
+    console.log(text, username, fullname, assets, "5555");
 
     if (!creator_id || !text) {
       return NextResponse.json(
@@ -22,10 +24,12 @@ export async function POST(req: Request) {
       username,
       fullname,
       text,
+      assets,
     });
 
     if (post) {
       const user = await User.findOne({ _id: creator_id });
+      console.log(post, "9090",);
 
       return NextResponse.json(
         {
@@ -33,6 +37,7 @@ export async function POST(req: Request) {
           creator_name: user?.fullname,
           creator_username: user?.username,
           text: post.text,
+          assets: post.assets,
           message: "Success! Your post has been published.",
         },
         { status: 201 }
