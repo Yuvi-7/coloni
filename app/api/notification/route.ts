@@ -89,17 +89,25 @@ export async function GET(req: Request) {
     }
 
     await connectDB();
+    let notify: any[] = [];
 
     const notification = await Notification.find({ notificationOF: userID });
+    const notification2 = await Notification.find({
+      "notificationFrom._id": userID,
+      type: "friends",
+    });
+    console.log(notification2, "notification2", notification);
 
-    if (notification?.length === 0) {
+    if (notification?.length === 0 && notification2?.length === 0) {
       return NextResponse.json(
         { message: "No Notifications Yet" },
         { status: 400 }
       );
     }
 
-    return NextResponse.json({ notification }, { status: 200 });
+    notify = [...notify, ...notification, ...notification2];
+
+    return NextResponse.json({ notification: notify }, { status: 200 });
   } catch (e) {
     return NextResponse.json({ message: e }, { status: 400 });
   }
