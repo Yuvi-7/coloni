@@ -2,6 +2,8 @@ import { Avatar } from "@mui/material";
 import { useSession } from "next-auth/react";
 import io from "socket.io-client";
 import React, { useEffect } from "react";
+import { fetchNotifications } from "@/lib/redux/features/notifications/notificationSlice";
+import { useAppDispatch } from "@/lib/redux/hooks";
 
 interface Colony {
   __v: number;
@@ -19,6 +21,7 @@ interface FriendReqProps {
 const FriendReq = ({ colony }: FriendReqProps) => {
   const session: any = useSession()?.data;
   const socket = io();
+  const dispatch = useAppDispatch();
 
   // console.log(colony, "colonies", session);
 
@@ -27,12 +30,12 @@ const FriendReq = ({ colony }: FriendReqProps) => {
 
     socket.on("notification", (message: string) => {
       console.log("Received notification:", message);
-      // Handle notification, e.g., display in UI
+      dispatch(fetchNotifications(session?.user?.id));
     });
 
     return () => {
       // NEED TOBE UNCOMMENT ----------------
-      // socket.disconnect();  
+      // socket.disconnect();
     };
   }, []);
 
@@ -43,8 +46,21 @@ const FriendReq = ({ colony }: FriendReqProps) => {
   const sendFriendReq = async (friendID: string) => {
     const res = await fetch(`/api/friends/?to=${friendID}`, { method: "POST" });
     const users = await res.json();
+
     if (users?.message) {
-      sendNotificationToUser(friendID);
+      const res = await fetch("/api/notification", {
+        method: "POST",
+        body: JSON.stringify({
+          notificationFrom: session.user.id,
+          notificationOF: friendID,
+          text: "sent you a friend request.",
+          type: "friend_request",
+        }),
+      });
+
+      if (res?.ok) {
+        sendNotificationToUser(friendID);
+      }
     }
   };
 

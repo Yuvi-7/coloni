@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import PostCard from "./PostCard";
 import CreatePost from "./create-post/CreatePost";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { fetchPosts } from "@/lib/redux/features/posts/PostsSlice";
+import { fetchPosts } from "@/lib/redux/features/posts/postsSlice";
 import FriendRequests from "./friend-request/FriendRequests";
 import { usePathname } from "next/navigation";
 
