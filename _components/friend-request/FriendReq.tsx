@@ -4,6 +4,9 @@ import io from "socket.io-client";
 import React, { useEffect } from "react";
 import { fetchNotifications } from "@/lib/redux/features/notifications/notificationSlice";
 import { useAppDispatch } from "@/lib/redux/hooks";
+import notifyAudio from "../../public/assets/audio/notification.mp3";
+import chat from "../../public/assets/icons/chat.png";
+import Image from "next/image";
 
 interface Colony {
   __v: number;
@@ -16,20 +19,28 @@ interface Colony {
 }
 interface FriendReqProps {
   colony: Colony;
+  type: String;
+  setToggleChat?: (value: boolean) => void;
 }
 
-const FriendReq = ({ colony }: FriendReqProps) => {
+const FriendReq = ({
+  colony,
+  type,
+  setToggleChat,
+}: FriendReqProps) => {
   const session: any = useSession()?.data;
   const socket = io();
   const dispatch = useAppDispatch();
 
-  // console.log(colony, "colonies", session);
+  console.log(colony, "colonies", type);
 
   useEffect(() => {
     socket.emit("userConnected", session?.user?.id);
 
     socket.on("notification", (message: string) => {
       console.log("Received notification:", message);
+      const audio = new Audio(notifyAudio);
+      audio.play();
       dispatch(fetchNotifications(session?.user?.id));
     });
 
@@ -40,7 +51,7 @@ const FriendReq = ({ colony }: FriendReqProps) => {
   }, []);
 
   const sendNotificationToUser = (friendID: string) => {
-    socket.emit("sent_friend_req", friendID);
+    socket.emit("sent_friend_req", friendID, "New Friend Request!");
   };
 
   const sendFriendReq = async (friendID: string) => {
@@ -65,7 +76,12 @@ const FriendReq = ({ colony }: FriendReqProps) => {
   };
 
   return (
-    <li className="py-3 sm:py-4">
+    <li
+      className={`py-3 sm:py-4 ${
+        type === "friends" ? "cursor-pointer" : "cursor-auto"
+      }`}
+      onClick={() => setToggleChat && setToggleChat(true)}
+    >
       <div className="flex items-center">
         <div className="flex-shrink-0">
           <Avatar
@@ -83,12 +99,19 @@ const FriendReq = ({ colony }: FriendReqProps) => {
           </p>
         </div>
         <div className="inline-flex items-center text-xs font-semibold text-gray-900 dark:text-white">
-          <button
-            className="bg-blue-300 p-2 rounded-md"
-            onClick={() => sendFriendReq(colony?._id)}
-          >
-            Add Colony
-          </button>
+          {type === "friends" ? (
+            <span>
+              <Image src={chat} alt="chat" width={25} />
+            </span>
+          ) : (
+            <button
+              className="bg-blue-300 p-2 rounded-md"
+              onClick={() => sendFriendReq(colony?._id)}
+            >
+              Add Colony
+            </button>
+          )}
+
           {/* <button
             className="bg-gray-300 p-2 rounded-md"
           >

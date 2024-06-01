@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import FriendReq from "./FriendReq";
-
 interface Colony {
   __v: number;
   _id: string;
@@ -11,12 +9,7 @@ interface Colony {
   username: string;
 }
 
-interface Type {
-  type: string;
-  setToggleChat?: (value: boolean) => void;
-}
-
-const FriendRequests = ({ type, setToggleChat, }: Type) => {
+const Friends = () => {
   const [colonies, setColonies] = useState<Colony[]>([]);
 
   useEffect(() => {
@@ -33,7 +26,7 @@ const FriendRequests = ({ type, setToggleChat, }: Type) => {
     <div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
       <div className="flex items-center justify-between mb-4">
         <h5 className="text-xl font-bold leading-none text-gray-900 dark:text-white">
-          {type === "friends" && "Friend"} Colonies
+          Colonies
         </h5>
         <a
           href="#"
@@ -49,11 +42,7 @@ const FriendRequests = ({ type, setToggleChat, }: Type) => {
         >
           {colonies?.map((colony: Colony) => (
             <div className="" key={colony?._id}>
-              <FriendReq
-                colony={colony}
-                type={type}
-                setToggleChat={setToggleChat}
-              />
+              <FriendReq colony={colony} />
             </div>
           ))}
         </ul>
@@ -62,4 +51,4 @@ const FriendRequests = ({ type, setToggleChat, }: Type) => {
   );
 };
 
-export default FriendRequests;
+export default Friends;

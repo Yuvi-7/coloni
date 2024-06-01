@@ -40,16 +40,15 @@ app.prepare().then(() => {
     });
 
     // Example: When a ban event occurs, send a notification to user 2
-    socket.on("sent_friend_req", (userID) => {
+    socket.on("sent_friend_req", (userID, msg) => {
       // console.log("runnXXX", userID);
 
       const room = userSockets[userID];
 
-      const notificationMessage = "You have been banned!";
       if (room) {
         console.log(room, "roomXX", userID, userSockets);
-        const operator1 = io.to(room?.id);  // to vikas user
-        operator1.emit("notification", notificationMessage);
+        const operator1 = io.to(room?.id); // to vikas user
+        operator1.emit("notification", msg);
       }
 
       // io.to(userSockets[userID]).emit("notification", notificationMessage);

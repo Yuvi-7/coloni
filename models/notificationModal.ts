@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import { Anybody } from "next/font/google";
 
 const Type = {
   _id: { type: String, required: true },
@@ -15,8 +14,7 @@ const createNotificationSchema = new mongoose.Schema(
       required: true,
     },
     notificationOF: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: Type,
       required: true,
     },
     text: {

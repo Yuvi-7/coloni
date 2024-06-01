@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     const notification = await Notification.find({
       $and: [
         { "notificationFrom._id": notificationFrom },
-        { notificationOF },
+        { "notificationOF._id": notificationOF },
         { type: "friend_request" },
       ],
     });
@@ -41,7 +41,12 @@ export async function POST(req: Request) {
       "-password"
     ).exec();
 
-    if (!notificationFromUser) {
+    const notificationToUser = await User.findById(
+      notificationOF,
+      "-password"
+    ).exec();
+
+    if (!notificationFromUser || !notificationToUser) {
       return NextResponse.json(
         {
           message: "Notification from user not found",
@@ -49,14 +54,60 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-    const { fat, exp, jai, sub, ...filteredUser } = notificationFromUser;
-    const { _id, fullname, username, email } = filteredUser?._doc;
 
-    console.log(filteredUser?._doc, "notificationFromUser", fullname);
+    // const { fat, exp, jai, sub, ...filteredUser } = notificationFromUser;
+    // const { _id, fullname, username, email } = filteredUser?._doc;
+
+    // const { fat, exp, jai, sub, ...filteredUser } = notificationToUser;
+    // const { _id, fullname, username, email } = filteredUser?._doc;
+
+    // Destructure notificationFromUser
+    const {
+      fat: fromFat,
+      exp: fromExp,
+      jai: fromJai,
+      sub: fromSub,
+      ...fromFilteredUser
+    } = notificationFromUser;
+
+    const {
+      _id: fromId,
+      fullname:fromFullname,
+      username: fromUsername,
+      email: fromEmail,
+    } = fromFilteredUser?._doc || {};
+
+    // Destructure notificationToUser
+    const {
+      fat: toFat,
+      exp: toExp,
+      jai: toJai,
+      sub: toSub,
+      ...toFilteredUser
+    } = notificationToUser;
+
+    const {
+      _id: toId,
+      fullname: toFullname,
+      username: toUsername,
+      email: toEmail,
+    } = toFilteredUser?._doc || {};
+
+    console.log(toFilteredUser?._doc, "notificationFromUser");
 
     const notify = await Notification.create({
-      notificationFrom: { _id, fullname, username, email },
-      notificationOF,
+      notificationFrom: {
+        _id: fromId,
+        fullname: fromFullname,
+        username: fromUsername,
+        email: fromEmail,
+      },
+      notificationOF: {
+        _id: toId,
+        fullname: toFullname,
+        username: toUsername,
+        email: toEmail,
+      },
       text,
       type,
     });
@@ -91,7 +142,7 @@ export async function GET(req: Request) {
     await connectDB();
     let notify: any[] = [];
 
-    const notification = await Notification.find({ notificationOF: userID });
+    const notification = await Notification.find({ "notificationOF._id": userID });
     const notification2 = await Notification.find({
       "notificationFrom._id": userID,
       type: "friends",

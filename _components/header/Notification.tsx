@@ -1,6 +1,14 @@
-import { notifcation as serverActionNotification } from "@/server-actions/notificationServerAction";
+import {
+  notifcation,
+  notifcation as serverActionNotification,
+} from "@/server-actions/notificationServerAction";
 import { Avatar } from "@mui/material";
 import React from "react";
+import { io } from "socket.io-client";
+import { fetchNotifications } from "@/lib/redux/features/notifications/notificationSlice";
+import { useAppDispatch } from "@/lib/redux/hooks";
+
+const socket = io();
 
 interface NotificationProps {
   notification: {
@@ -18,12 +26,36 @@ interface NotificationProps {
   };
 }
 
-const confirmReq = (fromID: string) => {
-  serverActionNotification("friends", { fromID });
+const sendNotificationToUser = (friendID: string) => {
+  socket.emit("sent_friend_req", friendID, "Friend Request Accepted!");
 };
 
+const confirmReq = async (fromID: string, dispatch: any) => {
+  const res = await serverActionNotification("friends", { fromID });
+  if (res) {
+    sendNotificationToUser(fromID);
+    dispatch(fetchNotifications(fromID)); // pass logged in userID
+  }
+  console.log(res, "resCC");
+};
+
+const renderText = (n: any) => {
+  return (
+    <>
+      {n.type === "friends"
+        ? `You and ${n?.notificationOF?.fullname}`
+        : n?.notificationFrom?.fullname}
+      <span className="text-gray-400">{" " + n?.text}</span>
+    </>
+  );
+};
+
+console.log(notifcation, "123");
+
 const Notification = ({ notification }: NotificationProps) => {
-  console.log(notification.type, "notification");
+  const dispatch = useAppDispatch();
+
+  console.log(notification, "notification");
   return (
     <div className="py-3 sm:py-4">
       <div className="flex items-center">
@@ -36,8 +68,7 @@ const Notification = ({ notification }: NotificationProps) => {
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-gray-900 truncate text-wrap">
-            {notification?.notificationFrom?.fullname}
-            <span className="text-gray-400">{" " + notification?.text}</span>
+            {renderText(notification)}
           </p>
         </div>
 
@@ -45,7 +76,9 @@ const Notification = ({ notification }: NotificationProps) => {
           <div className="inline-flex items-center text-xs font-semibold text-gray-900 dark:text-white">
             <button
               className="bg-blue-300 p-2 rounded-md mr-2"
-              onClick={() => confirmReq(notification?.notificationFrom?._id)}
+              onClick={() =>
+                confirmReq(notification?.notificationFrom?._id, dispatch)
+              }
             >
               Confirm
             </button>

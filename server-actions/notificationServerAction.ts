@@ -23,16 +23,16 @@ export async function notifcation(type: string, user: UserProp) {
 
       const res = await Notification.findOneAndUpdate(
         {
-          notificationOF: myUserID,
+          "notificationOF._id": myUserID,
           "notificationFrom._id": user.fromID,
         },
-        { $set: { text: "You both are now friends", type: "friends" } },
+        { $set: { text: "are now friends", type: "friends" } },
         { new: true }
       ).exec();
 
       console.log(res, "123r");
 
-      return res ? "You both are now friends" : "Something went wrong!";
+      return res ? true : "Something went wrong!";
 
       break;
 
