@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 /*making bell shape with one div */
 .bell {
   border: 2.17px solid white;

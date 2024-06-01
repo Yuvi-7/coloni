@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
@@ -10,15 +10,25 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import { MdOutlineLogout } from "react-icons/md";
+import { useSession } from "next-auth/react";
+import { fetchNotifications } from "@/lib/redux/features/notifications/notificationSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import Notification from "./Notification";
 
 const RightMenu = () => {
+  const notifications = useAppSelector((state) => state.notification);
   const [anchorEl, setAnchorEl] = useState({
     notification: null,
     profile: null,
   });
-
+  const session = useSession()?.data;
+  const dispatch = useAppDispatch();
   const open = Boolean(anchorEl.notification);
   const openProfile = Boolean(anchorEl.profile);
+
+  useEffect(() => {
+    session?.user?.id && dispatch(fetchNotifications(session?.user?.id));
+  }, [session]);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>, type: string) => {
     setAnchorEl({ ...anchorEl, [type]: event.currentTarget });
@@ -117,8 +127,23 @@ const RightMenu = () => {
         <h5 className="px-3 pb-2 font-medium">Notifications</h5>
         <hr />
 
-        <p className="text-center text-gray-400">No Notifications Yet</p>
-        <MenuItem onClick={() => handleClose("notification")}></MenuItem>
+        {notifications?.notifications?.length === 0 && (
+          <p className="text-center text-gray-400">No Notifications Yet</p>
+        )}
+
+        <MenuItem
+          onClick={() => handleClose("notification")}
+          style={{ flexDirection: "column" }}
+        >
+          {notifications?.notifications?.map((notification) => (
+            <div
+              className="w-full my-2"
+              key={`Notification${notification?._id}`}
+            >
+              <Notification notification={notification} />
+            </div>
+          ))}
+        </MenuItem>
       </Menu>
 
       <Menu
@@ -162,7 +187,7 @@ const RightMenu = () => {
           <ListItemIcon>
             <MdOutlineLogout size={20} />
           </ListItemIcon>
-          Logout
+          Logout 
         </MenuItem>
       </Menu>
     </>

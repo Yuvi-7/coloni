@@ -7,7 +7,7 @@ import { IoCloseOutline } from "react-icons/io5";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { toast } from "react-toastify";
-import { fetchPosts } from "@/lib/redux/features/posts/PostsSlice";
+import { fetchPosts } from "@/lib/redux/features/posts/postsSlice";
 import { uploadAssets } from "@/lib/uploadIntoFirebaseCloud";
 import { v4 as uuidv4 } from "uuid";
 import { useAppDispatch } from "@/lib/redux/hooks";

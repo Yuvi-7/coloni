@@ -2,6 +2,11 @@ import { Avatar } from "@mui/material";
 import { useSession } from "next-auth/react";
 import io from "socket.io-client";
 import React, { useEffect } from "react";
+import { fetchNotifications } from "@/lib/redux/features/notifications/notificationSlice";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import notifyAudio from "../../public/assets/audio/notification.mp3";
+import chat from "../../public/assets/icons/chat.png";
+import Image from "next/image";
 
 interface Colony {
   __v: number;
@@ -14,42 +19,69 @@ interface Colony {
 }
 interface FriendReqProps {
   colony: Colony;
+  type: String;
+  setToggleChat?: (value: boolean) => void;
 }
 
-const FriendReq = ({ colony }: FriendReqProps) => {
+const FriendReq = ({
+  colony,
+  type,
+  setToggleChat,
+}: FriendReqProps) => {
   const session: any = useSession()?.data;
   const socket = io();
+  const dispatch = useAppDispatch();
 
-  // console.log(colony, "colonies", session);
+  console.log(colony, "colonies", type);
 
   useEffect(() => {
     socket.emit("userConnected", session?.user?.id);
 
     socket.on("notification", (message: string) => {
       console.log("Received notification:", message);
-      // Handle notification, e.g., display in UI
+      const audio = new Audio(notifyAudio);
+      audio.play();
+      dispatch(fetchNotifications(session?.user?.id));
     });
 
     return () => {
       // NEED TOBE UNCOMMENT ----------------
-      // socket.disconnect();  
+      // socket.disconnect();
     };
   }, []);
 
   const sendNotificationToUser = (friendID: string) => {
-    socket.emit("sent_friend_req", friendID);
+    socket.emit("sent_friend_req", friendID, "New Friend Request!");
   };
 
   const sendFriendReq = async (friendID: string) => {
     const res = await fetch(`/api/friends/?to=${friendID}`, { method: "POST" });
     const users = await res.json();
+
     if (users?.message) {
-      sendNotificationToUser(friendID);
+      const res = await fetch("/api/notification", {
+        method: "POST",
+        body: JSON.stringify({
+          notificationFrom: session.user.id,
+          notificationOF: friendID,
+          text: "sent you a friend request.",
+          type: "friend_request",
+        }),
+      });
+
+      if (res?.ok) {
+        sendNotificationToUser(friendID);
+      }
     }
   };
 
   return (
-    <li className="py-3 sm:py-4">
+    <li
+      className={`py-3 sm:py-4 ${
+        type === "friends" ? "cursor-pointer" : "cursor-auto"
+      }`}
+      onClick={() => setToggleChat && setToggleChat(true)}
+    >
       <div className="flex items-center">
         <div className="flex-shrink-0">
           <Avatar
@@ -67,12 +99,19 @@ const FriendReq = ({ colony }: FriendReqProps) => {
           </p>
         </div>
         <div className="inline-flex items-center text-xs font-semibold text-gray-900 dark:text-white">
-          <button
-            className="bg-blue-300 p-2 rounded-md"
-            onClick={() => sendFriendReq(colony?._id)}
-          >
-            Add Colony
-          </button>
+          {type === "friends" ? (
+            <span>
+              <Image src={chat} alt="chat" width={25} />
+            </span>
+          ) : (
+            <button
+              className="bg-blue-300 p-2 rounded-md"
+              onClick={() => sendFriendReq(colony?._id)}
+            >
+              Add Colony
+            </button>
+          )}
+
           {/* <button
             className="bg-gray-300 p-2 rounded-md"
           >

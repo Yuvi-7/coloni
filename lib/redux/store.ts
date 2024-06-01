@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import postReducer from "./features/posts/PostsSlice";
+import postReducer from "./features/posts/postsSlice";
+import notificationReducer from "./features/notifications/notificationSlice";
 
 export const makeStore = () => {
   return configureStore({
     reducer: {
       post: postReducer,
+      notification: notificationReducer,
     },
   });
 };
