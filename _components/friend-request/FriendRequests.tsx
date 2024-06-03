@@ -16,7 +16,7 @@ interface Type {
   setToggleChat?: (value: boolean) => void;
 }
 
-const FriendRequests = ({ type, setToggleChat, }: Type) => {
+const FriendRequests = ({ type, setToggleChat }: Type) => {
   const [colonies, setColonies] = useState<Colony[]>([]);
 
   useEffect(() => {

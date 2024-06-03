@@ -3,10 +3,11 @@ import { useSession } from "next-auth/react";
 import io from "socket.io-client";
 import React, { useEffect } from "react";
 import { fetchNotifications } from "@/lib/redux/features/notifications/notificationSlice";
-import { useAppDispatch } from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import notifyAudio from "../../public/assets/audio/notification.mp3";
 import chat from "../../public/assets/icons/chat.png";
 import Image from "next/image";
+import { chatWithUser } from "@/lib/redux/features/chats/chatSlice";
 
 interface Colony {
   __v: number;
@@ -23,32 +24,29 @@ interface FriendReqProps {
   setToggleChat?: (value: boolean) => void;
 }
 
-const FriendReq = ({
-  colony,
-  type,
-  setToggleChat,
-}: FriendReqProps) => {
+const FriendReq = ({ colony, type, setToggleChat }: FriendReqProps) => {
   const session: any = useSession()?.data;
-  const socket = io();
+  const socket = useAppSelector((state) => state.chat.socket);
+  // const socket = io();
   const dispatch = useAppDispatch();
 
   console.log(colony, "colonies", type);
 
-  useEffect(() => {
-    socket.emit("userConnected", session?.user?.id);
+  // useEffect(() => {
+  //   socket.emit("userConnected", session?.user?.id);
 
-    socket.on("notification", (message: string) => {
-      console.log("Received notification:", message);
-      const audio = new Audio(notifyAudio);
-      audio.play();
-      dispatch(fetchNotifications(session?.user?.id));
-    });
+  //   socket.on("notification", (message: string) => {
+  //     console.log("Received notification:", message);
+  //     const audio = new Audio(notifyAudio);
+  //     audio.play();
+  //     dispatch(fetchNotifications(session?.user?.id));
+  //   });
 
-    return () => {
-      // NEED TOBE UNCOMMENT ----------------
-      // socket.disconnect();
-    };
-  }, []);
+  //   return () => {
+  //     // NEED TOBE UNCOMMENT ----------------
+  //     // socket.disconnect();
+  //   };
+  // }, []);
 
   const sendNotificationToUser = (friendID: string) => {
     socket.emit("sent_friend_req", friendID, "New Friend Request!");
@@ -80,7 +78,10 @@ const FriendReq = ({
       className={`py-3 sm:py-4 ${
         type === "friends" ? "cursor-pointer" : "cursor-auto"
       }`}
-      onClick={() => setToggleChat && setToggleChat(true)}
+      onClick={() => {
+        dispatch(chatWithUser(colony));
+        setToggleChat && setToggleChat(true);
+      }}
     >
       <div className="flex items-center">
         <div className="flex-shrink-0">
