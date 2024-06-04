@@ -28,8 +28,8 @@ export async function POST(req: Request) {
     });
 
     if (post) {
-      const user = await User.findOne({ _id: creatorc_id });
-      console.log(post, "9090",);
+      const user = await User.findOne({ _id: creator_id });
+      console.log(post, "9090");
 
       return NextResponse.json(
         {
