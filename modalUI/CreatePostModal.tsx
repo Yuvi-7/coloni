@@ -107,7 +107,6 @@ export default function CreatePostModal({ open, toggleModal }: Props) {
     setImages([...images?.filter((img: FileState) => img?.name !== name)]);
   };
 
-  // console.log(images, "ghj");
   return (
     <div>
       <Modal
@@ -167,7 +166,7 @@ export default function CreatePostModal({ open, toggleModal }: Props) {
                 className="flex gap-2 flex-wrap overflow-y-auto justify-between"
                 style={{ height: "30vh", marginBottom: "10px" }}
               >
-                {images.map((file: FileState, i: number) => (
+                {images.map((file: any, i: number) => (
                   <div
                     key={`upload_images${i}`}
                     style={{
