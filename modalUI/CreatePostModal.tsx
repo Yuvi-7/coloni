@@ -40,7 +40,7 @@ let style = {
 };
 
 export default function CreatePostModal({ open, toggleModal }: Props) {
-  const session = useSession()?.data;
+  const session: any = useSession()?.data;
   const [text, setText] = useState("");
   const [images, setImages] = useState<FileState[]>([]);
   const dispatch = useAppDispatch();
