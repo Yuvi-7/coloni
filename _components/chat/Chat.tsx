@@ -63,7 +63,8 @@ const Chat = ({ toggleChat, setToggleChat }: Props) => {
           paper: {
             style: {
               marginTop: "-10px",
-              right: "2rem",
+              width: "23rem",
+              // height: "20rem",
             },
           },
         }}

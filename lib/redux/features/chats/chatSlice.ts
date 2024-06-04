@@ -3,11 +3,13 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface ChatState {
   socket: any;
   chatWith: any;
+  messages: any;
 }
 
 const initialState: ChatState = {
   chatWith: {},
   socket: null,
+  messages: [],
 };
 
 export const chatSlice = createSlice({
@@ -20,8 +22,12 @@ export const chatSlice = createSlice({
     socketInstance: (state, action) => {
       return { ...state, socket: action.payload };
     },
+    dispatchMessages: (state, action) => {
+      return { ...state, messages: [...state.messages, { ...action.payload }] };
+    },
   },
 });
 
-export const { chatWithUser, socketInstance } = chatSlice.actions;
+export const { chatWithUser, socketInstance, dispatchMessages } =
+  chatSlice.actions;
 export default chatSlice.reducer;

@@ -8,6 +8,8 @@ import FriendRequests from "./friend-request/FriendRequests";
 import Chat from "./chat/Chat";
 import { useSession } from "next-auth/react";
 import { socket } from "@/utils/socket";
+import { Diplomata } from "next/font/google";
+import { dispatchMessages } from "@/lib/redux/features/chats/chatSlice";
 
 const Home = () => {
   const posts = useAppSelector((state) => state?.post);
@@ -25,10 +27,15 @@ const Home = () => {
       "private_message",
       ({ recipientDetail, senderID, message }: any) => {
         console.log(senderID, message, "MSGX", recipientDetail);
-        setMessages((prev: any) => [
-          ...prev,
-          { ...recipientDetail, from: "other", message },
-        ]);
+
+        dispatch(
+          dispatchMessages({ ...recipientDetail, message, from: "other" })
+        );
+
+        // setMessages((prev: any) => [
+        //   ...prev,
+        //   { ...recipientDetail, from: "other", message },
+        // ]);
       }
     );
 
