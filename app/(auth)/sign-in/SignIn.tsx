@@ -55,7 +55,7 @@ const SignIn = () => {
               Forgot password?
             </a>
             <p className="text-gray-900 mt-4">
-              Don't have an account?
+              Don&apos;t have an account?
               <a
                 href="/sign-up"
                 className="text-sm text-blue-500 -200 hover:underline mt-4 pl-1"
