@@ -11,7 +11,7 @@ const ChatBox = () => {
   const chatWith = useAppSelector((state) => state.chat.chatWith);
   const messages = useAppSelector((state) => state.chat.messages);
   const [inputMessage, setInputMessage] = useState("");
-  const messagesEndRef = useRef(null);
+  const messagesEndRef: any = useRef(null);
   const dispatch = useAppDispatch();
 
   const scrollToBottom = () => {
