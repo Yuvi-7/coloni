@@ -17,6 +17,7 @@ interface NotificationProps {
       username: string;
       email: string;
     };
+    _id: string;
     notificationOF: string;
     text: string;
     type: string;
