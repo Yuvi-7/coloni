@@ -7,9 +7,8 @@ export async function POST(req: Request) {
   try {
     const searchURL = new URL(req?.url);
     const session = await auth();
-
-    const fromUserID = session?.user?.id;
-    const toUserID = searchURL.searchParams.get("to");
+    const fromUserID: any = session?.user?.id;
+    const toUserID: any = searchURL.searchParams.get("to");
 
     if (fromUserID && toUserID) {
       await connectDB();
@@ -35,6 +34,11 @@ export async function POST(req: Request) {
 }
 
 export async function PATCH(req: Request) {
+  const session = await auth();
+  const searchURL = new URL(req?.url);
+  const fromUserID: any = session?.user?.id;
+  const toUserID: any = searchURL.searchParams.get("to");
+
   try {
     const searchURL = new URL(req?.url);
     const session = await auth();
@@ -56,8 +60,6 @@ export async function PATCH(req: Request) {
       },
       { new: true }
     );
-
-    
   } catch (e) {
     return NextResponse.json({ message: e }, { status: 400 });
   }
