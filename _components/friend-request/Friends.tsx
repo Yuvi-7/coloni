@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import FriendReq from "./FriendReq";
 interface Colony {
   __v: number;
   _id: string;
@@ -41,7 +42,7 @@ const Friends = () => {
           className="divide-y divide-gray-200 dark:divide-gray-700"
         >
           {colonies?.map((colony: Colony) => (
-            <div className="" key={colony?._id}>
+            <div key={colony?._id}>
               <FriendReq colony={colony} />
             </div>
           ))}

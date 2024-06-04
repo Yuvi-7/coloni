@@ -20,7 +20,7 @@ interface Colony {
 }
 interface FriendReqProps {
   colony: Colony;
-  type: String;
+  type?: String;
   setToggleChat?: (value: boolean) => void;
 }
 
