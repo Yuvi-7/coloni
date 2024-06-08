@@ -41,7 +41,7 @@ export const notificationSlice = createSlice({
       };
     });
 
-    builder.addCase(fetchNotifications.rejected, (state, action) => {
+    builder.addCase(fetchNotifications.rejected, (state, action: any) => {
       return {
         ...state,
         isLoading: false,

@@ -8,7 +8,7 @@ const { Server } = require("socket.io");
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
-const port = 3000;
+const port = process.env.PORT || 3000;
 // when using middleware `hostname` and `port` must be provided below
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
@@ -39,21 +39,42 @@ app.prepare().then(() => {
       userSockets[userID] = socket;
     });
 
-    // Example: When a ban event occurs, send a notification to user 2
     socket.on("sent_friend_req", (userID, msg) => {
-      // console.log("runnXXX", userID);
-
       const room = userSockets[userID];
-
       if (room) {
-        console.log(room, "roomXX", userID, userSockets);
         const operator1 = io.to(room?.id); // to vikas user
         operator1.emit("notification", msg);
       }
-
-      // io.to(userSockets[userID]).emit("notification", notificationMessage);
     });
+
+    socket.on("join_room", (userID) => {
+      socket.join(userID);
+    });
+
+    socket.on(
+      "private_message",
+      ({ recipientID, message, recipientDetail }) => {
+        // Emit the message only to the recipient's room
+
+        console.log(recipientID, "recipientID", recipientDetail);
+
+        io.to(recipientID).emit("private_message", {
+          senderID: socket.id,
+          message,
+          recipientDetail,
+        });
+      }
+    );
   });
+
+  // socket.on("message", (userID, msg) => {
+  //   const room = userSockets[userID];
+
+  //   if (room) {
+  //     const operator1 = io.to(room?.id);
+  //     operator1.emit("message", msg);
+  //   }
+  // });
 
   httpServer
     .once("error", (err) => {

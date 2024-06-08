@@ -3,6 +3,7 @@ import React from "react";
 
 const PostCard = ({ post }: any) => {
   // console.log(post, "000", post?.assets);
+
   return (
     <div className="bg-white rounded shadow max-w-lg mx-auto my-3">
       <header className="p-4">

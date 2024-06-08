@@ -8,7 +8,7 @@ import CreatePostModal from "@/modalUI/CreatePostModal";
 import { text } from "stream/consumers";
 
 const CreatePost = () => {
-  const session = useSession()?.data;
+  const session:any = useSession()?.data;
   const [open, setOpen] = useState(false);
 
   const toggleModal = () => {

@@ -10,8 +10,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 import connectDB from "@/lib/dbConnection";
 
-// You'll need to import and pass this
-// to `NextAuth` in `app/api/auth/[...nextauth]/route.ts`
 export const config = {
   providers: [
     CredentialsProvider({
@@ -38,12 +36,9 @@ export const config = {
           credentials.password,
           user.password
         );
-        console.log(isPasswordValid, "pass");
         if (!isPasswordValid) {
           throw new Error("Invalid email or password");
         }
-
-        console.log(user, "userX", user.username);
 
         return user;
       },
@@ -51,8 +46,7 @@ export const config = {
   ],
 
   callbacks: {
-    jwt: async ({ user, token, session }) => {
-      console.log(user, token, session, "jwt");
+    jwt: async ({ user, token }: any) => {
       if (user) {
         return {
           ...token,
@@ -64,7 +58,7 @@ export const config = {
       return token;
     },
 
-    session: async ({ session, token, user }) => {
+    session: async ({ session, token }) => {
       return {
         ...session,
         user: {
@@ -74,8 +68,6 @@ export const config = {
           username: token?.username,
         },
       };
-
-      return session;
     },
   },
 

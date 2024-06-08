@@ -12,11 +12,10 @@ export const metadata: Metadata = {
   description: "Next Gen Coloni Connect",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
-  pathname: any;
 }>) {
   return (
     <html lang="en">

@@ -13,6 +13,7 @@ const socket = io();
 interface NotificationProps {
   notification: {
     notificationFrom: {
+      _id: string;
       fullname: string;
       username: string;
       email: string;
@@ -49,8 +50,6 @@ const renderText = (n: any) => {
     </>
   );
 };
-
-console.log(notifcation, "123");
 
 const Notification = ({ notification }: NotificationProps) => {
   const dispatch = useAppDispatch();

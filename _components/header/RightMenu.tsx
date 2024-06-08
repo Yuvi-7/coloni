@@ -21,13 +21,14 @@ const RightMenu = () => {
     notification: null,
     profile: null,
   });
-  const session = useSession()?.data;
+  const session: any = useSession()?.data;
   const dispatch = useAppDispatch();
   const open = Boolean(anchorEl.notification);
   const openProfile = Boolean(anchorEl.profile);
 
   useEffect(() => {
     session?.user?.id && dispatch(fetchNotifications(session?.user?.id));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   const handleClick = (event: React.MouseEvent<HTMLElement>, type: string) => {
@@ -187,7 +188,7 @@ const RightMenu = () => {
           <ListItemIcon>
             <MdOutlineLogout size={20} />
           </ListItemIcon>
-          Logout 
+          Logout
         </MenuItem>
       </Menu>
     </>
