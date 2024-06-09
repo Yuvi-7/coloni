@@ -5,12 +5,10 @@ import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import { MdOutlineLogout } from "react-icons/md";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { fetchNotifications } from "@/lib/redux/features/notifications/notificationSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import Notification from "./Notification";
@@ -184,7 +182,7 @@ const RightMenu = () => {
           },
         }}
       >
-        <MenuItem onClick={() => handleClose("profile")}>
+        <MenuItem onClick={() => signOut({ callbackUrl: "/sign-in" })}>
           <ListItemIcon>
             <MdOutlineLogout size={20} />
           </ListItemIcon>
