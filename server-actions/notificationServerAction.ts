@@ -19,7 +19,6 @@ export async function notifcation(type: string, user: UserProp) {
       }
 
       await connectDB();
-      const notificationOFObjectId = new mongoose.Types.ObjectId(user.fromID);
 
       const res = await Notification.findOneAndUpdate(
         {
@@ -30,11 +29,7 @@ export async function notifcation(type: string, user: UserProp) {
         { new: true }
       ).exec();
 
-      console.log(res, "123r");
-
       return res ? true : "Something went wrong!";
-
-      break;
 
     default: {
       console.log("Something went wrong!");

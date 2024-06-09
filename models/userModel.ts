@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import Friend from "./friendsModal";
 
 const userSchema = new mongoose.Schema(
   {
@@ -24,23 +25,23 @@ const userSchema = new mongoose.Schema(
       required: [true, "Please add the user password"],
     },
 
-    // pending_friend_req: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: "User",
-    //   required: [false],
-    // },
-
-    // friends: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: "User",
-    //   required: [false],
-    // },
-
-    // sent_friend_req: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: "User",
-    //   required: [false],
-    // },
+    friends: [
+      {
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        fullname: {
+          type: String,
+        },
+        username: {
+          type: String,
+        },
+        email: {
+          type: String,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

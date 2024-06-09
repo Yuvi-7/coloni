@@ -33,34 +33,20 @@ export async function POST(req: Request) {
   }
 }
 
-export async function PATCH(req: Request) {
+export async function GET() {
   const session = await auth();
-  const searchURL = new URL(req?.url);
-  const fromUserID: any = session?.user?.id;
-  const toUserID: any = searchURL.searchParams.get("to");
+  const userID: any = session?.user?.id;
 
   try {
-    const searchURL = new URL(req?.url);
-    const session = await auth();
+    await connectDB();
+    const user = await User.findById(userID);
 
-    const myUserID = session?.user?.id;
-    const reqFrom = searchURL.searchParams.get("to");
-
-    if (!reqFrom || !myUserID) {
-      return NextResponse.json(
-        { message: "One of the ID is missing" },
-        { status: 400 }
-      );
+    if (!user) {
+      return NextResponse.json({ message: "User not Found!" }, { status: 400 });
     }
 
-    const res = await User.findByIdAndUpdate(
-      toUserID,
-      {
-        $push: { pending_friend_req: fromUserID },
-      },
-      { new: true }
-    );
-  } catch (e) {
-    return NextResponse.json({ message: e }, { status: 400 });
+    return NextResponse.json({ friends: user?.friends }, { status: 200 });
+  } catch (err) {
+    return NextResponse.json({ message: err }, { status: 400 });
   }
 }
