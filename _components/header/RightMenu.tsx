@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
+import { useRouter } from "next/navigation";
 import Avatar from "@mui/material/Avatar";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -23,6 +24,8 @@ const RightMenu = () => {
   const dispatch = useAppDispatch();
   const open = Boolean(anchorEl.notification);
   const openProfile = Boolean(anchorEl.profile);
+
+  const router = useRouter();
 
   useEffect(() => {
     session?.user?.id && dispatch(fetchNotifications(session?.user?.id));
@@ -182,7 +185,13 @@ const RightMenu = () => {
           },
         }}
       >
-        <MenuItem onClick={() => signOut({ callbackUrl: "/sign-in" })}>
+        <MenuItem
+          onClick={() => {
+            signOut({ redirect: false }).then(() => {
+              router.push("/sign-in");
+            });
+          }}
+        >
           <ListItemIcon>
             <MdOutlineLogout size={20} />
           </ListItemIcon>
