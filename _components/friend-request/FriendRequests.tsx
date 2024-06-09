@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import FriendReq from "./FriendReq";
 
 interface Colony {
@@ -14,21 +14,10 @@ interface Colony {
 interface Type {
   type: string;
   setToggleChat?: (value: boolean) => void;
+  colonies: Array<any>;
 }
 
-const FriendRequests = ({ type, setToggleChat }: Type) => {
-  const [colonies, setColonies] = useState<Colony[]>([]);
-
-  useEffect(() => {
-    getColonies();
-  }, []);
-
-  const getColonies = async () => {
-    const res = await fetch("/api/users");
-    const users = await res.json();
-    setColonies(users?.users);
-  };
-
+const FriendRequests = ({ type, setToggleChat, colonies }: Type) => {
   return (
     <div className="w-full max-w-md p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700">
       <div className="flex items-center justify-between mb-4">
@@ -48,7 +37,7 @@ const FriendRequests = ({ type, setToggleChat }: Type) => {
           className="divide-y divide-gray-200 dark:divide-gray-700"
         >
           {colonies?.map((colony: Colony) => (
-            <div className="" key={colony?._id}>
+            <div key={colony?._id}>
               <FriendReq
                 colony={colony}
                 type={type}

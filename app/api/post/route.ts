@@ -8,8 +8,6 @@ export async function POST(req: Request) {
   try {
     const { creator_id, text, username, fullname, assets } = await req.json();
 
-    console.log(text, username, fullname, assets, "5555");
-
     if (!creator_id || !text) {
       return NextResponse.json(
         { message: "All fields are mandatory!" },
@@ -29,7 +27,6 @@ export async function POST(req: Request) {
 
     if (post) {
       const user = await User.findOne({ _id: creator_id });
-      console.log(post, "9090");
 
       return NextResponse.json(
         {

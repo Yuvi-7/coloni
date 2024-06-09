@@ -35,7 +35,6 @@ app.prepare().then(() => {
 
     // When a user connects, store their socket instance
     socket.on("userConnected", (userID) => {
-      // console.log("userIDXX", userSockets);
       userSockets[userID] = socket;
     });
 
@@ -43,7 +42,7 @@ app.prepare().then(() => {
       const room = userSockets[userID];
       if (room) {
         const operator1 = io.to(room?.id); // to vikas user
-        operator1.emit("notification", msg);
+        operator1.emit("notification", msg, userID);
       }
     });
 
@@ -56,8 +55,6 @@ app.prepare().then(() => {
       ({ recipientID, message, recipientDetail }) => {
         // Emit the message only to the recipient's room
 
-        console.log(recipientID, "recipientID", recipientDetail);
-
         io.to(recipientID).emit("private_message", {
           senderID: socket.id,
           message,
@@ -66,15 +63,6 @@ app.prepare().then(() => {
       }
     );
   });
-
-  // socket.on("message", (userID, msg) => {
-  //   const room = userSockets[userID];
-
-  //   if (room) {
-  //     const operator1 = io.to(room?.id);
-  //     operator1.emit("message", msg);
-  //   }
-  // });
 
   httpServer
     .once("error", (err) => {

@@ -1,14 +1,10 @@
-import {
-  notifcation,
-  notifcation as serverActionNotification,
-} from "@/server-actions/notificationServerAction";
+import { notifcation as serverActionNotification } from "@/server-actions/notificationServerAction";
 import { Avatar } from "@mui/material";
 import React from "react";
-import { io } from "socket.io-client";
+import { socket } from "@/utils/socket";
 import { fetchNotifications } from "@/lib/redux/features/notifications/notificationSlice";
 import { useAppDispatch } from "@/lib/redux/hooks";
-
-const socket = io();
+import { useSession } from "next-auth/react";
 
 interface NotificationProps {
   notification: {
@@ -35,16 +31,21 @@ const confirmReq = async (fromID: string, dispatch: any) => {
   const res = await serverActionNotification("friends", { fromID });
   if (res) {
     sendNotificationToUser(fromID);
-    dispatch(fetchNotifications(fromID)); // pass logged in userID
+    dispatch(fetchNotifications(fromID));
   }
-  console.log(res, "resCC");
 };
 
 const renderText = (n: any) => {
+  const userName: any = useSession()?.data?.user;
+  const names = [
+    n?.notificationOF?.fullname,
+    n?.notificationFrom?.fullname,
+  ]?.filter((nm: any) => nm !== userName?.fullname);
+
   return (
     <>
       {n.type === "friends"
-        ? `You and ${n?.notificationOF?.fullname}`
+        ? `You and ${names}`
         : n?.notificationFrom?.fullname}
       <span className="text-gray-400">{" " + n?.text}</span>
     </>
@@ -54,7 +55,6 @@ const renderText = (n: any) => {
 const Notification = ({ notification }: NotificationProps) => {
   const dispatch = useAppDispatch();
 
-  console.log(notification, "notification");
   return (
     <div className="py-3 sm:py-4">
       <div className="flex items-center">

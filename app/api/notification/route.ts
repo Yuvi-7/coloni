@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/dbConnection";
 import Notification from "@/models/notificationModal";
 import User from "@/models/userModel";
-import { auth } from "../auth/auth";
+import { friendServerAction } from "@/server-actions/friendServerAction";
 
 export async function POST(req: Request) {
   try {
@@ -24,8 +24,6 @@ export async function POST(req: Request) {
         { type: "friend_request" },
       ],
     });
-
-    // console.log(notification, "notification00");
 
     if (notification?.length > 0) {
       return NextResponse.json(
@@ -55,12 +53,6 @@ export async function POST(req: Request) {
       );
     }
 
-    // const { fat, exp, jai, sub, ...filteredUser } = notificationFromUser;
-    // const { _id, fullname, username, email } = filteredUser?._doc;
-
-    // const { fat, exp, jai, sub, ...filteredUser } = notificationToUser;
-    // const { _id, fullname, username, email } = filteredUser?._doc;
-
     // Destructure notificationFromUser
     const {
       fat: fromFat,
@@ -72,7 +64,7 @@ export async function POST(req: Request) {
 
     const {
       _id: fromId,
-      fullname:fromFullname,
+      fullname: fromFullname,
       username: fromUsername,
       email: fromEmail,
     } = fromFilteredUser?._doc || {};
@@ -92,8 +84,6 @@ export async function POST(req: Request) {
       username: toUsername,
       email: toEmail,
     } = toFilteredUser?._doc || {};
-
-    console.log(toFilteredUser?._doc, "notificationFromUser");
 
     const notify = await Notification.create({
       notificationFrom: {
@@ -134,6 +124,7 @@ export async function GET(req: Request) {
   try {
     const searchURL = new URL(req?.url);
     const userID = searchURL.searchParams.get("userID");
+    let friends: any = [];
 
     if (!userID) {
       return NextResponse.json({ error: "User ID Required" }, { status: 400 });
@@ -142,18 +133,33 @@ export async function GET(req: Request) {
     await connectDB();
     let notify: any[] = [];
 
-    const notification = await Notification.find({ "notificationOF._id": userID });
+    const notification = await Notification.find({
+      "notificationOF._id": userID,
+    });
     const notification2 = await Notification.find({
       "notificationFrom._id": userID,
       type: "friends",
     });
-    console.log(notification2, "notification2", notification);
 
     if (notification?.length === 0 && notification2?.length === 0) {
       return NextResponse.json(
         { message: "No Notifications Yet" },
         { status: 400 }
       );
+    }
+
+    // Process friend requests in notification2
+    if (notification2?.length > 0 && notification2[0]?.type === "friends") {
+      for (const request of notification2) {
+        try {
+          await friendServerAction("friends", {
+            fromID: request.notificationFrom?._id,
+            toID: request.notificationOF?._id,
+          });
+        } catch (error) {
+          console.error("Error processing friend request:", error);
+        }
+      }
     }
 
     notify = [...notify, ...notification, ...notification2];
@@ -163,31 +169,3 @@ export async function GET(req: Request) {
     return NextResponse.json({ message: e }, { status: 400 });
   }
 }
-
-// export async function PATCH(req: Request) {
-//   try {
-//     const session = await auth();
-
-//     const searchURL = new URL(req?.url);
-//     const myUserID = session?.user?.id;
-//     const reqFrom = searchURL.searchParams.get("from");
-
-//     if (!myUserID) {
-//       return NextResponse.json({ message: "User not found" }, { status: 400 });
-//     }
-
-//     const res = await Notification.findByIdAndUpdate(
-//       { notificationOF: myUserID, "notificationFrom._id": reqFrom },
-//       {
-//         $set: { type: "friends", text: "You both are now Friends" },
-//       },
-//       { new: true }
-//     );
-
-//     if (res) {
-//       return NextResponse.json({ message: "Notific" }, { status: 400 });
-//     }
-//   } catch (e) {
-//     return NextResponse.json({ message: e }, { status: 400 });
-//   }
-// }

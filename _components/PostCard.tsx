@@ -2,8 +2,6 @@ import { Avatar } from "@mui/material";
 import React from "react";
 
 const PostCard = ({ post }: any) => {
-  // console.log(post, "000", post?.assets);
-
   return (
     <div className="bg-white rounded shadow max-w-lg mx-auto my-3">
       <header className="p-4">
@@ -38,8 +36,8 @@ const PostCard = ({ post }: any) => {
         <p className="text-sm text-gray-600 p-4">{post?.text}</p>
       </section>
 
-      <footer className="p-4">
-        <a
+      <footer className="p-4 flex justify-end items-center">
+        {/* <a
           href="#"
           className="uppercase font-bold text-sm text-blue-700 hover:underline mr-3"
         >
@@ -50,12 +48,15 @@ const PostCard = ({ post }: any) => {
           className="uppercase font-bold text-sm text-blue-700 hover:underline"
         >
           More Info
+
+          
+        </a> */}
+
+        <a href="#" className="float-right mr-3">
+          <img src="https://img.icons8.com/flat_round/24/000000/hearts.png" />
         </a>
         <a href="#" className="float-right">
           <img src="https://img.icons8.com/flat_round/24/000000/share--v1.png" />
-        </a>
-        <a href="#" className="float-right mr-3">
-          <img src="https://img.icons8.com/flat_round/24/000000/hearts.png" />
         </a>
       </footer>
     </div>

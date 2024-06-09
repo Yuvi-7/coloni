@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import postReducer from "./features/posts/postsSlice";
 import notificationReducer from "./features/notifications/notificationSlice";
 import chatReducer from "./features/chats/chatSlice";
+import friendReudcer from "./features/friends/friendSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -9,6 +10,7 @@ export const makeStore = () => {
       post: postReducer,
       notification: notificationReducer,
       chat: chatReducer,
+      friends: friendReudcer,
     },
   });
 };

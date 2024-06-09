@@ -7,7 +7,6 @@ import connectDB from "@/lib/dbConnection";
 export async function POST(req: Request) {
   try {
     const { email, password, username, fullname } = await req.json();
-    console.log(req.json(), "res");
 
     if (!username || !email || !password || !fullname) {
       return NextResponse.json(
@@ -32,9 +31,7 @@ export async function POST(req: Request) {
       username,
       email,
       password: hashedPassword,
-      pending_friend_req:[],
-      friends:[],
-      sent_friend_req:[]
+      friends: [],
     });
 
     if (user) {

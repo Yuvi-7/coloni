@@ -5,7 +5,7 @@ import { IoMdSend } from "react-icons/io";
 import { socket } from "@/utils/socket";
 import { dispatchMessages } from "@/lib/redux/features/chats/chatSlice";
 import Message from "./Message";
-import { Avatar } from "@mui/material";
+import { Alert, Avatar } from "@mui/material";
 
 const ChatBox = () => {
   const chatWith = useAppSelector((state) => state.chat.chatWith);
@@ -38,8 +38,6 @@ const ChatBox = () => {
     setInputMessage("");
   };
 
-  console.log(messages, "messagesX", chatWith);
-
   return (
     <>
       <div className="h-14 p-2 border-b-2 shadow-sm border-slate-200">
@@ -52,27 +50,13 @@ const ChatBox = () => {
             />
           </div>
           <div className="flex-1 min-w-0 ms-3">
-            <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+            <p className="text-sm font-medium text-gray-900 truncate">
               {chatWith?.fullname}
             </p>
             <p className="text-xs text-gray-500 truncate dark:text-gray-400">
               @{chatWith?.username}
             </p>
           </div>
-          {/* <div className="inline-flex items-center text-xs font-semibold text-gray-900 dark:text-white">
-            {type === "friends" ? (
-              <span>
-                <Image src={chat} alt="chat" width={25} />
-              </span>
-            ) : (
-              <button
-                className="bg-blue-300 p-2 rounded-md"
-                onClick={() => sendFriendReq(colony?._id)}
-              >
-                Add Colony
-              </button>
-            )}
-          </div> */}
         </div>
       </div>
 
@@ -80,12 +64,14 @@ const ChatBox = () => {
         id="messages"
         className="h-[22rem] flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
       >
+        <Alert severity="info">
+          We don't retain your messages for privacy.
+        </Alert>
         {messages?.map((msg: any, i: number) => (
           <div key={`Messages${msg.email + i}`}>
             <Message msg={msg} />
           </div>
         ))}
-
         <div ref={messagesEndRef} />
       </div>
 
