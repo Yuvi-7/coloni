@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import connectDB from "@/lib/dbConnection";
+import connectDB from "../../../lib/dbConnection";
 import Notification from "@/models/notificationModal";
-import User from "@/models/userModel";
+import User from "../../../models/userModel";
 import { friendServerAction } from "@/server-actions/friendServerAction";
 
 export async function POST(req: Request) {

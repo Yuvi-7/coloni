@@ -1,8 +1,8 @@
 "use server";
 import { NextResponse, NextRequest } from "next/server";
 import Post from "@/models/createPostModal";
-import connectDB from "@/lib/dbConnection";
-import User from "@/models/userModel";
+import connectDB from "../../../lib/dbConnection";
+import User from "../../../models/userModel";
 
 export async function POST(req: Request) {
   try {

@@ -5,10 +5,10 @@ import type {
 } from "next";
 import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
-import User from "@/models/userModel";
+import User from "../../../models/userModel";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
-import connectDB from "@/lib/dbConnection";
+import connectDB from "../../../lib/dbConnection";
 
 export const config = {
   providers: [

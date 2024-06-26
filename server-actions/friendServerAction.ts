@@ -1,7 +1,7 @@
 "use server";
 import { auth } from "@/app/api/auth/auth";
-import connectDB from "@/lib/dbConnection";
-import User from "@/models/userModel";
+import connectDB from "../lib/dbConnection";
+import User from "../models/userModel";
 
 interface UserProp {
   fromID: string;

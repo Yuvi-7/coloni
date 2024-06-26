@@ -1,6 +1,6 @@
 "use server";
 import { auth } from "@/app/api/auth/auth";
-import connectDB from "@/lib/dbConnection";
+import connectDB from "../lib/dbConnection";
 import Notification from "@/models/notificationModal";
 import mongoose from "mongoose";
 

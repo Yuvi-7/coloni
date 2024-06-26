@@ -1,8 +1,8 @@
 "use server";
 import { NextResponse, NextRequest } from "next/server";
-import User from "@/models/userModel";
+import User from "../../../../models/userModel";
 import bcrypt from "bcrypt";
-import connectDB from "@/lib/dbConnection";
+import connectDB from "../../../../lib/dbConnection";
 
 export async function POST(req: Request) {
   try {
