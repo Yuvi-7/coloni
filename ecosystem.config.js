@@ -1,9 +1,13 @@
 module.exports = {
   apps: [
     {
-      name: "next-app",
+      name: "nextjs-app",
       script: "node",
       args: "server.js",
+      watch: true,
+      env: {
+        NODE_ENV: "production",
+      },
     },
   ],
 };
