@@ -1,5 +1,4 @@
 "use client";
 
 import { io } from "socket.io-client";
-
-export const socket = io("https://echo.websocket.org/");
+export const socket = io();
