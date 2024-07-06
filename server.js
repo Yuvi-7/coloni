@@ -7,7 +7,8 @@ const { Server } = require("socket.io");
 // import { Server } from "socket.io";
 
 const dev = process.env.NODE_ENV !== "production";
-const hostname = "localhost";
+// const hostname = "localhost";
+const hostname = "0.0.0.0";
 const port = process.env.PORT || 3001;
 // when using middleware `hostname` and `port` must be provided below
 const app = next({ dev, hostname, port });
@@ -16,7 +17,14 @@ const handler = app.getRequestHandler();
 app.prepare().then(() => {
   const httpServer = createServer(handler);
 
-  const io = new Server(httpServer);
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "http://13.232.18.107", // Replace with your client URL
+      methods: ["GET", "POST"],
+      allowedHeaders: ["Content-Type"],
+      credentials: true,
+    },
+  });
 
   const userSockets = {};
 
