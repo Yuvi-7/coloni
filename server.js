@@ -1,38 +1,79 @@
 const { createServer } = require("http");
 const next = require("next");
 const { Server } = require("socket.io");
-const cors = require("cors");
 
 const dev = process.env.NODE_ENV !== "production";
-const hostname = "0.0.0.0"; // Bind to all network interfaces
+// const hostname = "localhost";
+const hostname = "0.0.0.0";
 const port = process.env.PORT || 3001;
-
+// when using middleware `hostname` and `port` must be provided below
 const app = next({ dev, hostname, port });
 const handler = app.getRequestHandler();
 
 app.prepare().then(() => {
   const httpServer = createServer(handler);
 
-  // Enable CORS for all origins, you can customize options if needed
-  httpServer.use(
-    cors({
-      origin: "http://13.232.18.107:3000",
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "http://13.232.18.107:3000", // Replace with your client URL
       methods: ["GET", "POST"],
       allowedHeaders: ["Content-Type"],
-      credentials: true, // Enable credentials if your client uses cookies, sessions, etc.
+      credentials: true,
+    },
+  });
+
+  const userSockets = {};
+
+  io.on("connection", (socket) => {
+    // ...
+
+    socket.on("disconnect", () => {
+      console.log("Client disconnected");
+      // Remove the socket reference when a client disconnects
+      Object.keys(userSockets).forEach((userId) => {
+        if (userSockets[userId] === socket) {
+          delete userSockets[userId];
+        }
+      });
+    });
+
+    // When a user connects, store their socket instance
+    socket.on("userConnected", (userID) => {
+      userSockets[userID] = socket;
+    });
+
+    socket.on("sent_friend_req", (userID, msg) => {
+      const room = userSockets[userID];
+      if (room) {
+        const operator1 = io.to(room?.id); // to vikas user
+        operator1.emit("notification", msg, userID);
+      }
+    });
+
+    socket.on("join_room", (userID) => {
+      socket.join(userID);
+    });
+
+    socket.on(
+      "private_message",
+      ({ recipientID, message, recipientDetail }) => {
+        // Emit the message only to the recipient's room
+
+        io.to(recipientID).emit("private_message", {
+          senderID: socket.id,
+          message,
+          recipientDetail,
+        });
+      }
+    );
+  });
+
+  httpServer
+    .once("error", (err) => {
+      console.error(err);
+      process.exit(1);
     })
-  );
-
-  const io = new Server(httpServer);
-
-  // Socket.IO logic here
-
-  httpServer.listen(port, hostname, () => {
-    console.log(`> Ready on http://${hostname}:${port}, SOCKET.IO`);
-  });
-
-  httpServer.on("error", (err) => {
-    console.error("Server error:", err);
-    process.exit(1);
-  });
+    .listen(port, () => {
+      console.log(`> Ready on http://${hostname}:${port}, SCOKET>IO`);
+    });
 });
