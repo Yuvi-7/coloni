@@ -2,6 +2,7 @@
 const nextConfig = {
   // next.config.js
 
+  addTrailingSlash: false,
   webpack: (config, { isServer }) => {
     // Add loader for MP3 files
     config.module.rules.push({
