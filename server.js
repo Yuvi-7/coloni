@@ -15,7 +15,7 @@ app.prepare().then(() => {
 
   const io = new Server(httpServer, {
     cors: {
-      origin: "http://13.232.18.107:3000", // Replace with your client URL
+      origin: "http://13.233.142.80:3000", // Replace with your client URL
       methods: ["GET", "POST"],
       allowedHeaders: ["Content-Type"],
       credentials: true,
